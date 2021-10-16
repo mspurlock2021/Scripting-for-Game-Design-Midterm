@@ -1,0 +1,5 @@
+sceneSetups:
+- path: Assets/Bitgem/StylisedWater/URP/Examples/Example-Scene-01.unity
+  isLoaded: 1
+  isActive: 1
+  isSubScene: 0
