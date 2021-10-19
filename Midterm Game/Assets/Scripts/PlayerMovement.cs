@@ -5,47 +5,42 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public float speed;
-    public KeyCode right;
-    public KeyCode left;
     public KeyCode up;
     public KeyCode down;
 
-    public float jumpForce = 10;
+    public float jumpForce = 400;
     public Rigidbody reggiebody;
 
     // Update is called once per frame
     void Update()
     {
-        float xMovement = 0;
-        float zMovement = 0;
-
-        if (Input.GetKey(right))
-        {
-            xMovement += speed * Time.deltaTime;
-        }
-        else if (Input.GetKey(left))
-        {
-            xMovement -= speed * Time.deltaTime;
-        }
 
         if (Input.GetKey(up))
         {
-            zMovement += speed * Time.deltaTime;
+            transform.TransformDirection(Vector3.forward * speed);
         }
         else if (Input.GetKey(down))
         {
-            zMovement -= speed * Time.deltaTime;
+            transform.TransformDirection(Vector3.back * speed);
         }
-
-        xMovement = this.gameObject.transform.position.x + xMovement;
-        zMovement = this.gameObject.transform.position.z + zMovement;
-
-        this.gameObject.transform.position = new Vector3(xMovement, this.gameObject.transform.position.y, zMovement);
 
         if (Input.GetButtonDown("Jump"))
         {
             reggiebody.AddForce(Vector3.up * jumpForce);
             //Debug.Log("Jump up");
         }
+
+        float h = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
+        float v = Input.GetAxis("Vertical") * speed * Time.deltaTime;
+
+        //        _transform.localPosition += _transform.right * h;
+        //        _transform.localPosition += _transform.forward * v;
+
+ //       Vector3 RIGHT = transform.TransformDirection(Vector3.right);
+        Vector3 FORWARD = transform.TransformDirection(Vector3.forward);
+
+ //       transform.localPosition += RIGHT * h;
+        transform.localPosition += FORWARD * v;
+
     }
 }
