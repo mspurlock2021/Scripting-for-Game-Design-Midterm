@@ -4,43 +4,65 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speed;
-    public KeyCode up;
-    public KeyCode down;
+    public CharacterController controller;
 
-    public float jumpForce = 400;
-    public Rigidbody reggiebody;
+    public KeyCode right;
+    public KeyCode left;
 
-    // Update is called once per frame
+    public float RotateSpeed = 60f;
+
+    public float speed = 6f;
+    public float gravity = -9.18f;
+    public float jumpHeight = 3f;
+
+    public Transform groundCheck;
+    public float groundDistance = 0.4f;
+    public LayerMask groundMask;
+
+    Vector3 velocity;
+    bool isGrounded;
     void Update()
     {
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-        if (Input.GetKey(up))
+        if (isGrounded && velocity.y < 0)
         {
-            transform.TransformDirection(Vector3.forward * speed);
-        }
-        else if (Input.GetKey(down))
-        {
-            transform.TransformDirection(Vector3.back * speed);
+            velocity.y = -2f;
         }
 
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetKey("left shift") && isGrounded)
         {
-            reggiebody.AddForce(Vector3.up * jumpForce);
-            //Debug.Log("Jump up");
+            speed = 12f;
+        }
+        else
+        {
+            speed = 6f;
         }
 
-        float h = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-        float v = Input.GetAxis("Vertical") * speed * Time.deltaTime;
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
 
-        //        _transform.localPosition += _transform.right * h;
-        //        _transform.localPosition += _transform.forward * v;
+        Vector3 move = transform.forward * z;
 
- //       Vector3 RIGHT = transform.TransformDirection(Vector3.right);
-        Vector3 FORWARD = transform.TransformDirection(Vector3.forward);
+        controller.Move(move * speed * Time.deltaTime);
 
- //       transform.localPosition += RIGHT * h;
-        transform.localPosition += FORWARD * v;
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
 
+        velocity.y += gravity * Time.deltaTime;
+
+        controller.Move(velocity * Time.deltaTime);
+
+        if (Input.GetKey(left))
+        {
+            transform.Rotate(-Vector3.up * RotateSpeed * Time.deltaTime);
+        }
+
+        else if (Input.GetKey(right))
+        {
+            transform.Rotate(Vector3.up * RotateSpeed * Time.deltaTime);
+        }
     }
 }
